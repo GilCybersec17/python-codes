@@ -1,0 +1,73 @@
+rock = '''
+    _______
+---'   ____)
+      (_____)
+      (_____)
+      (____)
+---.__(___)
+'''
+
+paper = '''
+    _______
+---'   ____)____
+          ______)
+          _______)
+         _______)
+---.__________)
+'''
+
+scissors = '''
+    _______
+---'   ____)____
+          ______)
+       __________)
+      (____)
+---.__(___)
+'''
+
+#Write your code below this line 👇
+
+userChoice = int(input("What do you choose? Type 0 for Rock, 1 for Paper or 2 for Scissors. \n "))
+if userChoice == 0:
+  print(rock)
+elif userChoice == 1:
+  print(paper)
+elif userChoice == 2:
+  print(scissors)
+else:
+  print("You entered invalid number")
+
+
+import random
+randomInteger = random.randint(0, 2)
+print(f"Computer chose: {randomInteger}")
+
+if randomInteger == 0:
+  print(rock)
+elif randomInteger == 1:
+  print(paper)
+else:
+  print(scissors)
+
+if (userChoice == 0) and (randomInteger == 1):
+  print("You lose!")
+elif (userChoice == 0) and (randomInteger == 2):
+  print("You win!")
+elif (userChoice == 0) and (randomInteger == 0):
+  print("It's a draw")
+  
+if (userChoice == 1) and (randomInteger == 2):
+  print("You lose!")
+elif (userChoice == 1) and (randomInteger == 0):
+  print("You win!")
+elif (userChoice == 1) and (randomInteger == 1):
+  print("It's a draw")
+  
+if (userChoice == 2) and (randomInteger == 0):
+  print("You lose!")
+elif (userChoice == 2) and (randomInteger == 1):
+  print("You win!")
+elif (userChoice == 2) and (randomInteger == 2):
+  print("It's a draw")
+
+  
