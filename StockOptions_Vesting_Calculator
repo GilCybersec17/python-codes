@@ -1,0 +1,15 @@
+#Stock Options | Exercise price of $239.20 | Vesting 83 stocks
+
+print()
+print(f"Welcome back Gil! Let's calculate your possible stock valuable base on stock prices.\n")
+
+def calculate_current_price():
+    current_stock_price = int(input(f'How much is the current stock price? '))
+    if current_stock_price >= 239.20:
+        stock_value = current_stock_price * 83
+        print(f'You can get ${round(stock_value)} if you sell it!\n\n')
+    else:
+        print(f'You will get $0 if you sell it due to the current stock price is below your $239.20 exercise price!\n\n')
+
+while True:
+    calculate_current_price()
