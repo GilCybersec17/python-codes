@@ -1,0 +1,25 @@
+#Stock Options | Exercise price of $239.20 , Qty. 330 stocks
+#First vesting 83 stocks on June 10, 2025
+
+print()
+print(f"Welcome back Gil! Let's calculate your possible stock valuable base on stock prices.\n")
+
+def calculate_stock_price():
+    CURRENT_STOCK_PRICE = int(input(f'How much is the stock price? '))
+    STOCK_QTY_TO_SELL = int(input(f'How many stocks are you planning to sell? '))
+
+    EXERCISE_PRICE = int(239)
+    STOCK_VALUE = (CURRENT_STOCK_PRICE * STOCK_QTY_TO_SELL)
+    EXERCISE_PRICE_TOTAL = EXERCISE_PRICE * STOCK_QTY_TO_SELL
+    TAX_DEDUCTION_15 = 0.85
+    AFTER_TAX_VALUE = STOCK_VALUE * TAX_DEDUCTION_15
+    ROUNDED_AFTER_TAX_VALUE = round(AFTER_TAX_VALUE)
+    PROFIT = STOCK_VALUE - EXERCISE_PRICE_TOTAL
+
+    if CURRENT_STOCK_PRICE >= EXERCISE_PRICE:
+        print(f'You can get ${STOCK_VALUE:,}. Which is ${ROUNDED_AFTER_TAX_VALUE:,} after 15% tax deduction if you sell it! (${PROFIT:,} profit).\n\n')
+    else:
+        print(f'You will get $0 if you sell it due to the current stock price is below your $239 exercise price!\n\n')
+
+while True:
+    calculate_stock_price()
