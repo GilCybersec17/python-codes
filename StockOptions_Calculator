@@ -1,5 +1,4 @@
-#Stock Options | Exercise price of $239.20 , Qty. 330 stocks
-#First vesting 83 stocks on June 10, 2025
+#Stock Options | Exercise price of $239
 
 print()
 print(f"Welcome back Gil! Let's calculate your possible stock valuable base on stock prices.\n")
