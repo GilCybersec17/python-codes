@@ -1,0 +1,16 @@
+import socket
+
+# List of PLC IPs to audit
+plc_inventory = ["192.168.1.10", "192.168.1.11", "192.168.1.12"]
+
+def audit_plc_web(ip):
+    try:
+        # Check if HTTP port is open
+        with socket.create_connection((ip, 80), timeout=1) as sock:
+            print(f"[!] ALERT: Web Server enabled on {ip}. Potential vulnerability.")
+            # In a real scenario, use 'requests' to check for "Siemens" in the header
+    except (socket.timeout, ConnectionRefusedError):
+        print(f"[+] {ip}: Port 80 closed. Secure.")
+
+for plc in plc_inventory:
+    audit_plc_web(plc)
