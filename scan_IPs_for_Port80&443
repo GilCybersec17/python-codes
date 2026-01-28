@@ -8,7 +8,7 @@ def audit_plc_web(ip):
         # Check if HTTP port is open
         with socket.create_connection((ip, 80), timeout=1) as sock:
             print(f"[!] ALERT: Web Server enabled on {ip}. Potential vulnerability.")
-            # In a real scenario, use 'requests' to check for "Siemens" in the header
+            # Use 'requests' to check for "Siemens" in the header
     except (socket.timeout, ConnectionRefusedError):
         print(f"[+] {ip}: Port 80 closed. Secure.")
 
