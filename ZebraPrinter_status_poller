@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""Poll Zebra printers over TCP 9100 with ~HQES and alert when errors change.
+
+Usage: python zebra_status_poller.py
+Edit PRINTERS and send_alert() below.
+"""
+import re
+import socket
+import time
+
+PRINTERS = {
+    "dock-1": "192.168.1.50",
+    "dock-2": "192.168.1.51",
+}
+PORT = 9100
+POLL_SECONDS = 10
+TIMEOUT = 3
+
+# Bit positions in the ERRORS flag word (lowest 32-bit group).
+# Verify against the Zebra ZPL Programming Guide for your firmware.
+ERROR_BITS = {
+    0: "Media out",
+    1: "Ribbon out",
+    2: "Head open",
+    3: "Cutter fault",
+    4: "Printhead over temp",
+    5: "Motor over temp",
+    6: "Bad printhead element",
+    7: "Printhead detection error",
+    8: "Invalid firmware config",
+    9: "Printhead thermistor open",
+}
+
+ERR_RE = re.compile(r"ERRORS:\s+(\d)\s+([0-9A-Fa-f]{8})\s+([0-9A-Fa-f]{8})")
+
+
+def query_status(ip: str) -> str:
+    with socket.create_connection((ip, PORT), timeout=TIMEOUT) as s:
+        s.settimeout(TIMEOUT)
+        s.sendall(b"~HQES")
+        data = b""
+        try:
+            while True:
+                chunk = s.recv(1024)
+                if not chunk:
+                    break
+                data += chunk
+                if b"WARNINGS:" in data and data.rstrip().endswith(tuple(
+                        str(i).encode() for i in "0123456789ABCDEF")):
+                    break
+        except socket.timeout:
+            pass
+    return data.decode(errors="replace")
+
+
+def parse_errors(text: str) -> list[str]:
+    m = ERR_RE.search(text)
+    if not m:
+        return ["Unparseable response"]
+    flags = int(m.group(3), 16)
+    return [name for bit, name in ERROR_BITS.items() if flags & (1 << bit)]
+
+
+def send_alert(name: str, ip: str, problems: list[str]) -> None:
+    # Replace with email / Teams / Slack webhook / syslog, etc.
+    state = ", ".join(problems) if problems else "OK (recovered)"
+    print(f"[ALERT] {name} ({ip}): {state}")
+
+
+def main() -> None:
+    last: dict[str, tuple] = {}
+    while True:
+        for name, ip in PRINTERS.items():
+            try:
+                problems = parse_errors(query_status(ip))
+            except OSError as e:
+                problems = [f"Unreachable ({e})"]
+            key = tuple(problems)
+            if last.get(name, ()) != key:
+                # Alert only on change, including recovery.
+                if problems or name in last:
+                    send_alert(name, ip, problems)
+                last[name] = key
+        time.sleep(POLL_SECONDS)
+
+
+if __name__ == "__main__":
+    main()
